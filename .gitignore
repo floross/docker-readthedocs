@@ -1,8 +1,13 @@
+# Docker RTD gitignore
 
+## Files
+docker-compose.yml
 *.pyc
 *~
 *#
 .#*
+
+## Directories (volumes created by docker-compose)
 pgsql
 user_builds
 es
