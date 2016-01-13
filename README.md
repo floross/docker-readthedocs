@@ -111,9 +111,9 @@ Using Redis will start a `celery` worker on `readthedocs` to handle build tasks.
 
 | Name                     | Description        | Default value | RTD `config.py` target (if any)     |
 | ------------------------ | ------------------ | ------------- | ----------------------------------- |
-| `REDIS_ENV_HOST`         | Redis host         | `'localhost'` | `REDIS['host']                      |
-| `REDIS_ENV_PORT`         | Redis port         | `'6379'`      | `REDIS['port']                      |
-| `REDIS_ENV_DB`           | Redis database     | `'0'`         | `REDIS['db']                        |
+| `REDIS_ENV_HOST`         | Redis host         | `'localhost'` | `REDIS['host']`                     |
+| `REDIS_ENV_PORT`         | Redis port         | `'6379'`      | `REDIS['port']`                     |
+| `REDIS_ENV_DB`           | Redis database     | `'0'`         | `REDIS['db']`                       |
 
 Enabling Redis will start a `celery` worker on `readthedocs` to handle build
 tasks. It will also set the following flags on `config.py`:
