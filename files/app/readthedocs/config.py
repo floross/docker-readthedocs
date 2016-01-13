@@ -11,7 +11,7 @@ SITE_ROOT = '/app'
 if 'RTD_HAS_DATABASE' in environ:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': os.getenv('DB_ENV_ENGINE', 'django.db.backends.postgresql_psycopg2'),
             'NAME': os.getenv('DB_ENV_DB_NAME', 'reathedocs'),
             'USER': os.getenv('DB_ENV_DB_USER', 'root'),
             'PASSWORD': os.getenv('DB_ENV_DB_PASS', None),
