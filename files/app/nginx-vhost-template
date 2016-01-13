@@ -1,0 +1,71 @@
+upstream readthedocs_server {
+  server localhost:8000;
+}
+
+server {
+    listen 80 default;
+    # server_name *;
+
+    client_max_body_size 256M;
+
+    access_log /app/logs/nginx-access.log;
+    error_log /app/logs/nginx-error.log;
+
+    location /static {
+        root /app/media;
+    }
+
+    location /media {
+        root /app;
+    }
+
+    location / {
+
+        # an HTTP header important enough to have its own Wikipedia entry:
+        #   http://en.wikipedia.org/wiki/X-Forwarded-For
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # enable this if and only if you use HTTPS, this helps Rack
+        # set the proper protocol for doing redirects:
+        # proxy_set_header X-Forwarded-Proto https;
+
+        # pass the Host: header from the client right along so redirects
+        # can be set properly within the Rack application
+        proxy_set_header Host $http_host;
+
+        # we don't want nginx trying to do something clever with
+        # redirects, we set the Host: header above already.
+        proxy_redirect off;
+
+        # Set higher timeout to make readthedocs builds work
+        proxy_read_timeout 300;
+
+        # Try to serve static files from nginx, no point in making an
+        # *application* server like Unicorn/Rainbows! serve static files.
+        if (!-f $request_filename) {
+            proxy_pass http://readthedocs_server;
+            break;
+        }
+    }
+}
+
+server {
+    listen 80;
+    server_name ~^(?<project>.+)\.{{PUBLIC_HOST_NAME}}$;
+
+    access_log /app/logs/nginx-access-subdomain.log;
+    error_log /app/logs/nginx-error-subdomain.log;
+
+    location /static {
+        root /app/media;
+    }
+
+    location /media {
+        root /app;
+    }
+
+    location / {
+        root /app/user_builds/$project/translations;
+        rewrite ^/$ /en/latest/ redirect;
+    }
+}

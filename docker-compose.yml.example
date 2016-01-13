@@ -1,0 +1,43 @@
+db:
+  image: sameersbn/postgresql:9.1-1
+  environment:
+    - DB_USER=docs
+    - DB_PASS=secretpassword
+    - DB_NAME=docs
+    - HOST=db
+    - PORT=5432
+  volumes:
+    - ./pgsql:/var/lib/postgresql
+
+elasticsearch:
+  image: jfroche/elasticsearch
+  volumes:
+    - ./es:/var/lib/elasticsearch
+  environment:
+    - HOST=elasticsearch
+    - PORT=9200
+
+redis:
+  image: redis
+  environment:
+    - HOST=redis
+    - PORT=6379
+    - DB=0
+
+readthedocs:
+  build: .
+  ports:
+    - "8000:80"
+  links:
+    - db
+    - elasticsearch
+    - redis
+  volumes:
+    - ./user_builds:/app/user_builds
+  environment:
+    - RTD_PRODUCTION_DOMAIN=example.com
+    - RTD_HAS_DATABASE=true
+    - RTD_HAS_ELASTICSEARCH=true
+    - RTD_HAS_REDIS=true
+    - RTD_USE_SUBDOMAIN=true
+    - RTD_ALLOW_PRIVATE_REPOS=true
