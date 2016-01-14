@@ -1,43 +1,58 @@
-db:
-  image: sameersbn/postgresql:9.1-1
-  environment:
-    - DB_USER=docs
-    - DB_PASS=secretpassword
-    - DB_NAME=docs
-    - HOST=db
-    - PORT=5432
-  volumes:
-    - ./pgsql:/var/lib/postgresql
+## Uncomment this block to add a pgSQL container for data persistance
+## Don't forget to add the link below and to set relevant env vars
+#db:
+#  image: sameersbn/postgresql:9.1-1
+#  environment:
+#    - DB_USER=docs
+#    - DB_PASS=secretpassword
+#    - DB_NAME=docs
+#    # These two are required for RTD config:
+#    - HOST=db
+#    - PORT=5432
+#  volumes:
+#    - ./pgsql:/var/lib/postgresql
 
-elasticsearch:
-  image: jfroche/elasticsearch
-  volumes:
-    - ./es:/var/lib/elasticsearch
-  environment:
-    - HOST=elasticsearch
-    - PORT=9200
+## Uncomment this block to add an Elasticsearch container for indexing
+## (currently untested)
+## Don't forget to add the link below and to set relevant env vars
+#elasticsearch:
+#  image: jfroche/elasticsearch
+#  volumes:
+#    - ./es:/var/lib/elasticsearch
+#  environment:
+#    # These two are required for RTD config:
+#    - HOST=elasticsearch
+#    - PORT=9200
 
-redis:
-  image: redis
-  environment:
-    - HOST=redis
-    - PORT=6379
-    - DB=0
+## Uncomment this block to add a Redis container for Celery builds
+## Don't forget to add the link below and to set relevant env vars
+#redis:
+#  image: redis
+#  environment:
+#    # These three are required for RTD config:
+#    - HOST=redis
+#    - PORT=6379
+#    - DB=0
 
 readthedocs:
   image: floross/docker-readthedocs
   ports:
     - "8000:80"
-  links:
-    - db
-    - elasticsearch
-    - redis
+  #links:
+    #- db
+    #- elasticsearch
+    #- redis
   volumes:
     - ./user_builds:/app/user_builds
   environment:
     - RTD_PRODUCTION_DOMAIN=example.com
-    - RTD_HAS_DATABASE=true
-    - RTD_HAS_ELASTICSEARCH=true
-    - RTD_HAS_REDIS=true
     - RTD_USE_SUBDOMAIN=true
     - RTD_ALLOW_PRIVATE_REPOS=true
+
+    - RTD_ADMIN_PASSWORD=aStrongS3cr37P4ssw0rd
+    - RTD_SLUMBER_PASSWORD=th150ne5h0u1dB357r0ng700
+
+    # Uncomment if using any of these
+    #- RTD_HAS_DATABASE=true
+    #- RTD_HAS_ELASTICSEARCH=true
+    #- RTD_HAS_REDIS=true

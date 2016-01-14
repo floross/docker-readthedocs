@@ -10,7 +10,8 @@ with many goodies.
   * Optional database backend
   * Optional Redis+Celery support
   * Optional ElasticSearch support (untested)
-  * Painless subdomain serving (i.e. `yourproject.docs.domain.com`)
+  * Painless subdomain serving (i.e. `{project}.docs.domain.com`)
+  * Correctly handles alternative domain names for projects
   * Want more? Open an issue or submit a pull request!
 
 ## Installation
@@ -29,12 +30,11 @@ Simply launch a `docker run` with relevant params.
 
 ### Compose
 
-Copy the `compose.yml.example` to `example.yml` and adjust your configuration.
-Then run:
+Create a compose file:
 
-    $ docker-compose build
+    $ cp docker-compose.yml{.example,}
 
-To start:
+Adjust to your desired configuration, then start:
 
     $ docker-compose up
 
@@ -134,7 +134,9 @@ tasks. It will also set the following flags on `config.py`:
 `'true'`.**
 
 
-_____________________
+______
+
 *Credits to [moul/docker-readthedocs](https://github.com/moul/docker-readthedocs)*
+
 *Credits to [vassilvk/readthedocs-docker](https://github.com/vassilvk/readthedocs-docker)*
 
