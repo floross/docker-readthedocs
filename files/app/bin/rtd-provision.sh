@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-if [[ "$RTD_HAS_ELASTICSEARCH" -eq "true" ]]
+if [[ "$RTD_HAS_ELASTICSEARCH" == "true" ]]
 then
     echo "Provisioning Elasticsearch..."
     curl -XPUT 'http://$ELASTICSEARCH_ENV_HOST:$ELASTICSEARCH_ENV_PORT/readthedocs/'
