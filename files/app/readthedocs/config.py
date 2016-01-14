@@ -8,7 +8,7 @@ environ = os.environ
 
 SITE_ROOT = '/app'
 
-if 'RTD_HAS_DATABASE' in environ:
+if os.getenv('RTD_HAS_DATABASE', 'false').lower() == 'true':
     DATABASES = {
         'default': {
             'ENGINE': os.getenv('DB_ENV_ENGINE', 'django.db.backends.postgresql_psycopg2'),
@@ -20,7 +20,7 @@ if 'RTD_HAS_DATABASE' in environ:
         }
     }
 
-if 'RTD_HAS_ELASTICSEARCH' in environ:
+if os.getenv('RTD_HAS_ELASTICSEARCH', 'false').lower() == 'true':
     ES_HOSTS = [
         '{0}:{1}'.format(
             os.getenv('ELASTICSEARCH_ENV_HOST', 'localhost'),
@@ -28,7 +28,7 @@ if 'RTD_HAS_ELASTICSEARCH' in environ:
         )
     ]
 
-if 'RTD_HAS_REDIS' in environ:
+if os.getenv('RTD_HAS_REDIS', 'false').lower() == 'true':
     redis_host = os.getenv('REDIS_ENV_HOST', 'localhost')
     redis_port = os.getenv('REDIS_ENV_PORT', '6379')
     redis_db   = os.getenv('REDIS_ENV_DB', '0')
