@@ -8,7 +8,8 @@ with many goodies.
 ## Features
 
   * Optional database backend
-  * Optional Redis and ElasticSearch support
+  * Optional Redis+Celery support
+  * Optional ElasticSearch support (untested)
   * Painless subdomain serving (i.e. `yourproject.docs.domain.com`)
   * Want more? Open an issue or submit a pull request!
 
@@ -54,8 +55,15 @@ All the RTD environment are prefixed with `RTD_`
 | `RTD_PRODUCTION_DOMAIN`           | The production domain use for nginx and RTD to configure the urls | `'localhost:8000'` | `PRODUCTION_DOMAIN` |
 | `RTD_PUBLIC_DOMAIN`               | The public domain of the application | Value of `RTD_PRODUCTION_DOMAIN` | `PUBLIC DOMAIN` |
 | `RTD_USE_SUBDOMAIN`               | Disable the `/docs/<project>` RTD routes and use only the subdomain | `'false'` | `USE_SUBDOMAIN` |
-| `RTD_SLUMBER_API_HOST`            | Configure the host of the RTD slumber api | `'http://localhost:8000'` | `SLUMBER_API_HOST` |
 | `RTD_GLOBAL_ANALYTICS_CODE`       | Your analytics code | `''` | `GLOBAL_ANALYTICS_CODE` |
+| | | | |
+| `RTD_ADMIN_USERNAME`              | The username of the superuser account to create | `'admin'` | - |
+| `RTD_ADMIN_PASSWORD`              | The password of the superuser account to create | `'admin'` | - |
+| `RTD_ADMIN_EMAIL`                 | The email address of the superuser account to create | `'{RTD_ADMIN_USERNAME}@localhost` | - |
+| `RTD_SLUMBER_USERNAME`              | The username of the Slumber API account to create | `'slumber'` | `SLUMBER_USERNAME` |
+| `RTD_SLUMBER_PASSWORD`              | The password of the Slumber API account to create | `'slumber'` | `SLUMBER_PASSWORD` |
+| `RTD_SLUMBER_EMAIL`                 | The email address of the Slumber API account to create | `'{RTD_SLUMBER_USERNAME}@localhost` | - |
+| `RTD_SLUMBER_API_HOST`            | Configure the host of the RTD slumber api | `'http://localhost:8000'` | `SLUMBER_API_HOST` |
 | | | | |
 | `RTD_HAS_DATABASE`                | Configure Django with a database if `'true'` (see below) | `'false'` | - |
 | `RTD_HAS_ELASTICSEARCH`           | Configure the app with an ElasticSearch endpoint if `'true'` (see below) | `'false'` | - |
@@ -83,7 +91,7 @@ To enable a postgre database, an elasticsearch server or a redis you will need t
 **These settings are *ignored* if the env var `RTD_HAS_DATABASE` is not set to
 `'true'`.**
 
-### ElasticSearch (if `$RTD_HAS_ELASTICSEARCH == 'true'`)
+### ElasticSearch (UNTESTED) (if `$RTD_HAS_ELASTICSEARCH == 'true'`)
 
 > These vars are automatically assigned by `docker-compose` from the env vars of
 > the `elasticsearch` container (i.e. `elasticsearch`'s `HOST` env var is
@@ -93,8 +101,8 @@ To enable a postgre database, an elasticsearch server or a redis you will need t
 
 | Name                     | Description        | Default value | RTD `config.py` target (if any)     |
 | ------------------------ | ------------------ | ------------- | ----------------------------------- |
-| `ELASTICSEARCH_ENV_HOST` | Elasticsearch host | `'localhost'` | `ES_HOSTS[1]` (as `{host}:{port}`)  |
-| `ELASTICSEARCH_ENV_PORT` | Elasticsearch port | `'9200'`      | `ES_HOSTS[1]` (as `{host}:{port}`)  |
+| `ELASTICSEARCH_ENV_HOST` | Elasticsearch host | `'localhost'` | `ES_HOSTS[0]` (as `{host}:{port}`)  |
+| `ELASTICSEARCH_ENV_PORT` | Elasticsearch port | `'9200'`      | `ES_HOSTS[0]` (as `{host}:{port}`)  |
 
 **These settings are *ignored* if the env var `RTD_HAS_ELASTICSEARCH` is not set
 to `'true'`.**
@@ -128,3 +136,5 @@ tasks. It will also set the following flags on `config.py`:
 
 _____________________
 *Credits to [moul/docker-readthedocs](https://github.com/moul/docker-readthedocs)*
+*Credits to [vassilvk/readthedocs-docker](https://github.com/vassilvk/readthedocs-docker)*
+

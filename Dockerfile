@@ -43,9 +43,9 @@ RUN virtualenv /venv
 RUN adduser --gecos 'py' --disabled-password py
 
 RUN mkdir -p $APPDIR
+WORKDIR $APPDIR
 
 # Setup read the doc
-WORKDIR $APPDIR
 
 ## Extract readthedocs
 RUN wget -q --no-check-certificate -O /tmp/master.zip \
@@ -66,6 +66,7 @@ RUN $PYTHON setup.py develop
 
 ## Copy special configuration for read the docs
 RUN ln -s "$APPDIR/readthedocs/static/vendor" "$APPDIR/readthedocs/core/static/vendor" && \
+    ln -s $APPDIR/manage.py $APPDIR/readthedocs/manage.py && \
     ln -s $APPDIR/readthedocs/core/static $APPDIR/media/ && \
     ln -s $APPDIR/readthedocs/builds/static/builds $APPDIR/media/static/builds && \
     ln -s /etc/nginx/sites-available/readthedocs /etc/nginx/sites-enabled/readthedocs && \
@@ -74,8 +75,14 @@ RUN ln -s "$APPDIR/readthedocs/static/vendor" "$APPDIR/readthedocs/core/static/v
     chmod +x $APPDIR/bin/* && \
     chown -R py .
 
+# Build RTD's locale files
+RUN cd $APPDIR/readthedocs && \
+    $PYTHON manage.py makemessages --all && \
+    $PYTHON manage.py compilemessages
+
+
 # Docker config
 EXPOSE 80
 VOLUME [ "/app" ]
 
-CMD $APPDIR/bin/docker-entrypoint.sh
+CMD [ "supervisord", "-c", "/etc/supervisord.conf", "-n" ]

@@ -64,3 +64,13 @@ SLUMBER_API_HOST = os.getenv('RTD_SLUMBER_API_HOST', 'http://localhost:8000')
 GLOBAL_ANALYTICS_CODE = os.getenv('RTD_GLOBAL_ANALYTICS_CODE', '')
 
 FILE_SYNCER = 'privacy.backends.syncers.LocalSyncer'
+
+# Users
+ADMIN_USERNAME = os.getenv('RTD_ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD = os.getenv('RTD_ADMIN_PASSWORD', 'admin')
+ADMIN_EMAIL    = os.getenv('RTD_ADMIN_EMAIL', '{0}@localhost'.format(ADMIN_USERNAME))
+
+SLUMBER_USERNAME = os.getenv('RTD_SLUMBER_USERNAME', 'slumber')
+SLUMBER_PASSWORD = os.getenv('RTD_SLUMBER_PASSWORD', 'slumber')
+SLUMBER_EMAIL    = os.getenv('RTD_SLUMBER_EMAIL', '{0}@localhost'.format(SLUMBER_USERNAME))
+
