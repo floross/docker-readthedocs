@@ -1,0 +1,44 @@
+version: '3'
+services:
+  database:
+    image: postgres:10-alpine
+    volumes:
+      - ./pgsql:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    env_file:
+      - ${RTD_ENV_FILE:-example.env}
+    environment:
+      - POSTGRES_DB=${DB_NAME:-readthedocs}
+      - POSTGRES_USER=${DB_USER:-rtd}
+      - POSTGRES_PASSWORD=${DB_PASS:-rtd}
+
+  elasticsearch:
+    build: ./elasticsearch-icu
+    image: elasticsearch-icu:1.7-alpine
+    volumes:
+      - ./es:/usr/share/elasticsearch/data
+    expose:
+      - "9200"
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+  redis:
+    image: redis
+    expose:
+      - "6379"
+
+  readthedocs:
+    build: ./readthedocs
+    image: readthedocs
+    ports:
+      - "80:80"
+    depends_on:
+      - database
+      - elasticsearch
+      - redis
+    volumes:
+      - ./user_builds:/app/user_builds
+    env_file:
+      - ${RTD_ENV_FILE:-example.env}

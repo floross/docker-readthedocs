@@ -1,0 +1,3 @@
+* Allow to easily enable subdomain serving:
+  provide full config file, select config and patch domain name on the fly
+* Run RTD with special user (I don't see optimal solution for this ATM)

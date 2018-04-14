@@ -1,5 +1,5 @@
 import os
-import config
+import readthedocs.settings.container as config
 from django.contrib.auth.models import User
 
 try:

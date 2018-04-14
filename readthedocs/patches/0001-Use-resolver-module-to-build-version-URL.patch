@@ -1,0 +1,51 @@
+From 0f39deae9584f2ca2e1c434e9fb6fb4dc0121608 Mon Sep 17 00:00:00 2001
+From: Yevgeny Popovych <yevgenyp@pointgrab.com>
+Date: Wed, 6 Jun 2018 22:08:00 +0300
+Subject: [PATCH 1/2] Use resolver module to build version URL
+
+Upstream-Status: Submitted [github.com/rtfd/readthedocs.org/pull/4215]
+
+Signed-off-by: Yevgeny Popovych <yevgenyp@pointgrab.com>
+---
+ readthedocs/builds/models.py                               | 4 ++++
+ readthedocs/doc_builder/templates/doc_builder/conf.py.tmpl | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/readthedocs/builds/models.py b/readthedocs/builds/models.py
+index 4bb8c355..af4e3a8d 100644
+--- a/readthedocs/builds/models.py
++++ b/readthedocs/builds/models.py
+@@ -19,6 +19,7 @@ from django.utils.translation import ugettext
+ from guardian.shortcuts import assign
+ from taggit.managers import TaggableManager
+ 
++from readthedocs.core.resolver import resolve_path
+ from readthedocs.core.utils import broadcast
+ from readthedocs.projects.constants import (
+     BITBUCKET_URL, GITHUB_URL, GITLAB_URL, PRIVACY_CHOICES, PRIVATE)
+@@ -151,6 +152,9 @@ class Version(models.Model):
+         log.debug('TODO: Raise an exception here. Testing what cases it happens')
+         return self.identifier
+ 
++    def get_url(self):
++        return resolve_path(self.project, version_slug=self.slug)
++
+     def get_absolute_url(self):
+         if not self.built and not self.uploaded:
+             return reverse(
+diff --git a/readthedocs/doc_builder/templates/doc_builder/conf.py.tmpl b/readthedocs/doc_builder/templates/doc_builder/conf.py.tmpl
+index 2ad5b885..f29d70a5 100644
+--- a/readthedocs/doc_builder/templates/doc_builder/conf.py.tmpl
++++ b/readthedocs/doc_builder/templates/doc_builder/conf.py.tmpl
+@@ -82,7 +82,7 @@ context = {
+     'MEDIA_URL': "{{ settings.MEDIA_URL }}",
+     'PRODUCTION_DOMAIN': "{{ settings.PRODUCTION_DOMAIN }}",
+     'versions': [{% for version in versions %}
+-    ("{{ version.slug }}", "/{{ version.project.language }}/{{ version.slug}}/"),{% endfor %}
++    ("{{ version.slug }}", "{{ version.get_url }}"),{% endfor %}
+     ],
+     'downloads': [ {% for key, val in downloads.items %}
+     ("{{ key }}", "{{ val }}"),{% endfor %}
+-- 
+2.17.1
+

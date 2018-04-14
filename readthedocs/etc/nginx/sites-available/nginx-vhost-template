@@ -1,0 +1,24 @@
+
+# Serve public documentation by subdomain
+server {
+    listen 80;
+    server_name ~^(?<project>.+)\.ESCAPED-PRODUCTION-DOMAIN-NAME$;
+    root /app;
+
+    access_log /app/logs/nginx-access-subdomain.log;
+    error_log /app/logs/nginx-error-subdomain.log;
+
+    location /static {
+        root /app/media;
+    }
+
+    location /media {
+    }
+
+    location / {
+        root /app/public_web_root/$project;
+        location = / {
+            rewrite ^/$ /en/latest/ redirect;
+        }
+    }
+}

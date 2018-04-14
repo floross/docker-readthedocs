@@ -1,7 +1,6 @@
 # Docker RTD gitignore
 
 ## Files
-docker-compose.yml
 *.pyc
 *~
 *#
