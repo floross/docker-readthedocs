@@ -12,7 +12,7 @@ if os.getenv('RTD_HAS_DATABASE', 'false').lower() == 'true':
     DATABASES = {
         'default': {
             'ENGINE': os.getenv('DB_ENV_ENGINE', 'django.db.backends.postgresql_psycopg2'),
-            'NAME': os.getenv('DB_ENV_DB_NAME', 'reathedocs'),
+            'NAME': os.getenv('DB_ENV_DB_NAME', 'readthedocs'),
             'USER': os.getenv('DB_ENV_DB_USER', 'root'),
             'PASSWORD': os.getenv('DB_ENV_DB_PASS', None),
             'HOST': os.getenv('DB_ENV_HOST', 'localhost'),
