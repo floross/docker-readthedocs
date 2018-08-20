@@ -1,0 +1,56 @@
+upstream readthedocs_server {
+    server localhost:8000;
+}
+
+server {
+    listen 80 default;
+    root /app;
+
+    access_log /app/logs/nginx-access.log;
+    error_log /app/logs/nginx-error.log;
+
+    client_max_body_size 256M;
+
+    # Default proxy settings
+    # We require the correct Host to be set so that subdomains work
+    proxy_set_header Host $host;
+    # FIXME: use X-Real-IP if already set
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_read_timeout 300;
+
+
+    # Default: Proxy to Django backend with correct headers
+    location / {
+        proxy_pass http://readthedocs_server;
+    }
+
+    location @fallback {
+        proxy_pass http://readthedocs_server;
+    }
+
+    # Serve public docs by nginx from public_web_root
+    location /docs {
+        alias /app/public_web_root;
+
+        # Let the backend handle this page in case of 404 - it may be private
+        error_page 404 = @fallback;
+
+        # Just for the sake of nice error page..
+        error_page 403 = @fallback;
+    }
+
+    # Serve private docs when RTD backend ask us to with an X-Accel-Redirect
+    location /private_web_root {
+        internal;
+    }
+
+
+    # Serve statics
+    location /static {
+        root /app/media;
+    }
+
+    location /media {
+    }
+}
